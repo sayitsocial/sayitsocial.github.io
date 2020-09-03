@@ -1,0 +1,178 @@
+consumes:
+- application/json
+definitions:
+  Body:
+    properties:
+      message:
+        description: The validation message
+        example: Expected type int
+        type: string
+        x-go-name: Message
+    required:
+    - message
+    type: object
+    x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/routes/authentication
+  OrgType:
+    format: int64
+    type: integer
+    x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/routes/api
+host: sayitsocial.in
+info:
+  description: Documentation of SayItSocialAPI.
+  title: SayItSocial.
+  version: 1.0.0
+paths:
+  /api/create/org:
+    post:
+      consumes:
+      - application/json
+      description: This will show create a new volunteer.
+      operationId: createOrganisation
+      parameters:
+      - description: Email of Organisation
+        in: body
+        name: email
+        required: true
+        schema:
+          type: string
+        x-go-name: Email
+      - description: Password of user
+        in: body
+        name: password
+        required: true
+        schema:
+          type: string
+        x-go-name: Password
+      - description: Name of Organisation
+        in: body
+        name: org_name
+        required: true
+        schema:
+          type: string
+        x-go-name: OrgName
+      - description: Type of Organisation
+        in: body
+        name: org_type
+        required: true
+        schema:
+          $ref: '#/definitions/OrgType'
+        x-go-name: TypeOfOrg
+      - description: Locality of Organisation
+        in: body
+        name: locality
+        required: true
+        schema:
+          type: string
+        x-go-name: Locality
+      - description: Owner of Organisation
+        in: body
+        name: owner
+        required: true
+        schema:
+          type: string
+        x-go-name: Owner
+      - description: Registration Number of organisation according to ngodarpan if applicable
+        in: body
+        name: reg_no
+        schema:
+          type: string
+        x-go-name: RegistrationNo
+      produces:
+      - application/json
+      responses:
+        "200":
+          $ref: '#/responses/successResponse'
+      schemes:
+      - http
+      summary: Create a new organisation
+      tags:
+      - user_creation
+  /api/create/vol:
+    post:
+      consumes:
+      - application/json
+      description: This will show create a new volunteer.
+      operationId: createVolunteer
+      parameters:
+      - description: First name of user
+        in: body
+        name: first_name
+        required: true
+        schema:
+          type: string
+        x-go-name: FirstName
+      - description: Last name of user
+        in: body
+        name: last_name
+        required: true
+        schema:
+          type: string
+        x-go-name: LastName
+      - description: Email of user
+        in: body
+        name: email
+        required: true
+        schema:
+          type: string
+        x-go-name: Email
+      - description: Password of user
+        in: body
+        name: password
+        required: true
+        schema:
+          type: string
+        x-go-name: Password
+      produces:
+      - application/json
+      responses:
+        "200":
+          $ref: '#/responses/successResponse'
+      schemes:
+      - http
+      summary: Create a new volunteer
+      tags:
+      - user_creation
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login to existing account
+      operationId: login
+      parameters:
+      - description: Username of user
+        in: body
+        name: username
+        required: true
+        schema:
+          type: string
+        x-go-name: Username
+      - description: Password of user
+        in: body
+        name: password
+        required: true
+        schema:
+          type: string
+        x-go-name: Password
+      responses:
+        "200":
+          $ref: '#/responses/successResponse'
+      schemes:
+      - http
+      tags:
+      - auth
+produces:
+- application/json
+responses:
+  successResponse:
+    description: Success
+    schema:
+      $ref: '#/definitions/Body'
+schemes:
+- http
+securityDefinitions:
+  cookieAuth:
+    description: Doesnt work from swagger, head over to /login
+    in: cookie
+    name: SESSIONID
+    type: apiKey
+swagger: "2.0"
