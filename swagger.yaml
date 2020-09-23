@@ -2,20 +2,16 @@ consumes:
 - application/json
 definitions:
   Body:
+    description: Body contains body of response
     properties:
       message:
         description: The validation message
-        example: Expected type int
         type: string
         x-go-name: Message
     required:
     - message
     type: object
     x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/routes/authentication
-  OrgType:
-    format: int64
-    type: integer
-    x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/routes/api
 host: sayitsocial.in
 info:
   description: Documentation of SayItSocialAPI.
@@ -25,57 +21,51 @@ paths:
   /api/create/org:
     post:
       consumes:
-      - application/json
+      - application/x-www-form-urlencoded
       description: This will show create a new volunteer.
       operationId: createOrganisation
       parameters:
       - description: Email of Organisation
-        in: body
+        in: query
         name: email
         required: true
-        schema:
-          type: string
+        type: string
         x-go-name: Email
       - description: Password of user
-        in: body
+        in: query
         name: password
         required: true
-        schema:
-          type: string
+        type: string
         x-go-name: Password
       - description: Name of Organisation
-        in: body
+        in: query
         name: org_name
         required: true
-        schema:
-          type: string
+        type: string
         x-go-name: OrgName
       - description: Type of Organisation
-        in: body
+        format: int64
+        in: query
         name: org_type
         required: true
-        schema:
-          $ref: '#/definitions/OrgType'
+        type: integer
         x-go-name: TypeOfOrg
       - description: Locality of Organisation
-        in: body
+        in: query
         name: locality
         required: true
-        schema:
-          type: string
+        type: string
         x-go-name: Locality
       - description: Owner of Organisation
-        in: body
+        in: query
         name: owner
         required: true
-        schema:
-          type: string
+        type: string
         x-go-name: Owner
       - description: Registration Number of organisation according to ngodarpan if applicable
-        in: body
+        in: query
         name: reg_no
-        schema:
-          type: string
+        type: string
         x-go-name: RegistrationNo
       produces:
       - application/json
@@ -90,37 +80,33 @@ paths:
   /api/create/vol:
     post:
       consumes:
-      - application/json
+      - application/x-www-form-urlencoded
       description: This will show create a new volunteer.
       operationId: createVolunteer
       parameters:
       - description: First name of user
-        in: body
+        in: query
         name: first_name
         required: true
-        schema:
-          type: string
+        type: string
         x-go-name: FirstName
       - description: Last name of user
-        in: body
+        in: query
         name: last_name
         required: true
-        schema:
-          type: string
+        type: string
         x-go-name: LastName
       - description: Email of user
-        in: body
+        in: query
         name: email
         required: true
-        schema:
-          type: string
+        type: string
         x-go-name: Email
       - description: Password of user
-        in: body
+        in: query
         name: password
         required: true
-        schema:
-          type: string
+        type: string
         x-go-name: Password
       produces:
       - application/json
@@ -140,19 +126,30 @@ paths:
       operationId: login
       parameters:
       - description: Username of user
-        in: body
+        in: query
         name: username
         required: true
-        schema:
-          type: string
+        type: string
         x-go-name: Username
       - description: Password of user
-        in: body
+        in: query
         name: password
         required: true
-        schema:
-          type: string
+        type: string
         x-go-name: Password
+      responses:
+        "200":
+          $ref: '#/responses/successResponse'
+      schemes:
+      - http
+      tags:
+      - auth
+  /auth/logout:
+    post:
+      consumes:
+      - application/json
+      description: Logout from existing account
+      operationId: logout
       responses:
         "200":
           $ref: '#/responses/successResponse'
