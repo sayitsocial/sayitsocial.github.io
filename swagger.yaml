@@ -378,6 +378,8 @@ paths:
       responses:
         "200":
           $ref: '#/responses/successResponse'
+        "401":
+          $ref: '#/responses/invalidCredsResponse'
       schemes:
       - http
       tags:
@@ -398,10 +400,12 @@ paths:
 produces:
 - application/json
 responses:
-  successResponse:
-    description: Success
+  invalidCredsResponse:
+    description: Could not authorize
     schema:
       $ref: '#/definitions/Body'
+  successResponse:
+    description: Success
 schemes:
 - http
 securityDefinitions:
