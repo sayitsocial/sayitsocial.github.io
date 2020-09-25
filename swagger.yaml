@@ -11,7 +11,7 @@ definitions:
     required:
     - message
     type: object
-    x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/routes/authentication
+    x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/routes/common
 host: sayitsocial-dev.ddns.net:8000
 info:
   description: Documentation of SayItSocialAPI.
@@ -379,7 +379,7 @@ paths:
         "200":
           $ref: '#/responses/successResponse'
         "401":
-          $ref: '#/responses/invalidCredsResponse'
+          $ref: '#/responses/unauthorizedError'
       schemes:
       - http
       tags:
@@ -400,12 +400,14 @@ paths:
 produces:
 - application/json
 responses:
-  invalidCredsResponse:
-    description: Could not authorize
+  SuccessResponse:
+    description: SuccessResponse ...
     schema:
       $ref: '#/definitions/Body'
-  successResponse:
-    description: Success
+  errResponse:
+    description: ErrorResponse ...
+    schema:
+      $ref: '#/definitions/Body'
 schemes:
 - http
 securityDefinitions:
