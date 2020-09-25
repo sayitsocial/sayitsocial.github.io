@@ -18,7 +18,176 @@ info:
   title: classification SayItSocial.
   version: 1.0.0
 paths:
-  /api/create/org:
+  /api/event/attendee:
+    get:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: This will show create a new volunteer.
+      operationId: getEventAttendee
+      parameters:
+      - description: Generated ID
+        in: query
+        name: generated_id
+        type: string
+        x-go-name: GeneratedID
+      - description: ID of host of event (user)
+        in: query
+        name: volunteer_id
+        type: string
+        x-go-name: VolunteerID
+      - description: ID of event
+        in: query
+        name: event_id
+        type: string
+        x-go-name: EventID
+      produces:
+      - application/json
+      responses:
+        "200":
+          $ref: '#/responses/successResponse'
+      schemes:
+      - http
+      summary: |-
+        Get attendees of event
+        Atleast one param is required
+      tags:
+      - event
+  /api/event/create:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: This will show create a new volunteer.
+      operationId: createEvent
+      parameters:
+      - description: ID of host of event (org)
+        in: query
+        name: organisation_id
+        type: string
+        x-go-name: OrganisationID
+      - description: ID of host of event (user)
+        in: query
+        name: volunteer_id
+        type: string
+        x-go-name: VolunteerID
+      - description: Name of event
+        in: query
+        name: name
+        type: string
+        x-go-name: Name
+      - description: Name of event
+        in: query
+        name: description
+        type: string
+        x-go-name: Description
+      - description: Start time of event [unix timestamp]
+        format: int64
+        in: query
+        name: start_time
+        type: integer
+        x-go-name: StartTime
+      - description: Type of category [Refer to event_category]
+        format: int64
+        in: query
+        name: category
+        type: integer
+        x-go-name: Category
+      produces:
+      - application/json
+      responses:
+        "200":
+          $ref: '#/responses/successResponse'
+      schemes:
+      - http
+      summary: Create a new event
+      tags:
+      - event
+  /api/event/get:
+    get:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: This will show create a new volunteer.
+      operationId: getEvent
+      parameters:
+      - description: Event id of event
+        in: query
+        name: event_id
+        type: string
+        x-go-name: EventID
+      - description: Name of event
+        in: query
+        name: name
+        type: string
+        x-go-name: Name
+      - description: Start time of event [unix timestamp]
+        format: int64
+        in: query
+        name: start_time
+        type: integer
+        x-go-name: StartTime
+      - description: Host time of event [unix timestamp]
+        format: int64
+        in: query
+        name: host_time
+        type: integer
+        x-go-name: HostTime
+      - description: Type of category [Refer to event_category]
+        format: int64
+        in: query
+        name: category
+        type: integer
+        x-go-name: Category
+      produces:
+      - application/json
+      responses:
+        "200":
+          $ref: '#/responses/successResponse'
+      schemes:
+      - http
+      summary: |-
+        Get details of event
+        Atleast one param is required
+      tags:
+      - event
+  /api/event/host:
+    get:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: This will show create a new volunteer.
+      operationId: getEventHost
+      parameters:
+      - description: Generated ID
+        in: query
+        name: generated_id
+        type: string
+        x-go-name: GeneratedID
+      - description: ID of host of event (org)
+        in: query
+        name: organisation_id
+        type: string
+        x-go-name: OrganisationID
+      - description: ID of host of event (user)
+        in: query
+        name: volunteer_id
+        type: string
+        x-go-name: VolunteerID
+      - description: ID of event
+        in: query
+        name: event_id
+        type: string
+        x-go-name: EventID
+      produces:
+      - application/json
+      responses:
+        "200":
+          $ref: '#/responses/successResponse'
+      schemes:
+      - http
+      summary: |-
+        Get hosts of event
+        Atleast one param is required
+      tags:
+      - event
+  /api/org/create:
     post:
       consumes:
       - application/x-www-form-urlencoded
@@ -76,8 +245,48 @@ paths:
       - http
       summary: Create a new organisation
       tags:
-      - user_creation
-  /api/create/vol:
+      - organisation
+  /api/org/get:
+    get:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: This will show create a new volunteer.
+      operationId: getOrganisation
+      parameters:
+      - description: Organisation ID
+        in: query
+        name: organisation_id
+        type: string
+        x-go-name: OrganisationID
+      - description: Name of organisation
+        in: query
+        name: display_name
+        type: string
+        x-go-name: DisplayName
+      - description: Owner of organisation
+        in: query
+        name: owner
+        type: string
+        x-go-name: Owner
+      - description: Type of organisation
+        format: int64
+        in: query
+        name: type_of_org
+        type: integer
+        x-go-name: TypeOfOrg
+      produces:
+      - application/json
+      responses:
+        "200":
+          $ref: '#/responses/successResponse'
+      schemes:
+      - http
+      summary: |-
+        Get attendees of event
+        Atleast one param is required
+      tags:
+      - organisation
+  /api/vol/create:
     post:
       consumes:
       - application/x-www-form-urlencoded
@@ -117,124 +326,24 @@ paths:
       - http
       summary: Create a new volunteer
       tags:
-      - user_creation
-  /api/event:
+      - volunteer
+  /api/vol/get:
     get:
       consumes:
       - application/x-www-form-urlencoded
       description: This will show create a new volunteer.
-      operationId: getEvent
+      operationId: getVolunteer
       parameters:
-      - description: Event id of event
-        in: query
-        name: event_id
-        type: string
-        x-go-name: EventID
-      - description: Name of event
-        in: query
-        name: name
-        type: string
-        x-go-name: Name
-      - description: Start time of event [unix timestamp]
-        format: int64
-        in: query
-        name: start_time
-        type: integer
-        x-go-name: StartTime
-      - description: Host time of event [unix timestamp]
-        format: int64
-        in: query
-        name: host_time
-        type: integer
-        x-go-name: HostTime
-      - description: Type of category [Refer to event_category]
-        format: int64
-        in: query
-        name: category
-        type: integer
-        x-go-name: Category
-      produces:
-      - application/json
-      responses:
-        "200":
-          $ref: '#/responses/successResponse'
-      schemes:
-      - http
-      summary: |-
-        Get details of event
-        Atleast one param is required
-      tags:
-      - event
-    post:
-      consumes:
-      - application/x-www-form-urlencoded
-      description: This will show create a new volunteer.
-      operationId: createEvent
-      parameters:
-      - description: ID of host of event (org)
+      - description: Organisation ID
         in: query
         name: organisation_id
         type: string
-        x-go-name: OrganisationID
-      - description: ID of host of event (user)
-        in: query
-        name: volunteer_id
-        type: string
         x-go-name: VolunteerID
-      - description: Name of event
+      - description: Name of organisation
         in: query
-        name: name
+        name: display_name
         type: string
-        x-go-name: Name
-      - description: Name of event
-        in: query
-        name: description
-        type: string
-        x-go-name: Description
-      - description: Start time of event [unix timestamp]
-        format: int64
-        in: query
-        name: start_time
-        type: integer
-        x-go-name: StartTime
-      - description: Type of category [Refer to event_category]
-        format: int64
-        in: query
-        name: category
-        type: integer
-        x-go-name: Category
-      produces:
-      - application/json
-      responses:
-        "200":
-          $ref: '#/responses/successResponse'
-      schemes:
-      - http
-      summary: Create a new event
-      tags:
-      - event
-  /api/event/attendee:
-    get:
-      consumes:
-      - application/x-www-form-urlencoded
-      description: This will show create a new volunteer.
-      operationId: getEventAttendee
-      parameters:
-      - description: Generated ID
-        in: query
-        name: generated_id
-        type: string
-        x-go-name: GeneratedID
-      - description: ID of host of event (user)
-        in: query
-        name: volunteer_id
-        type: string
-        x-go-name: VolunteerID
-      - description: ID of event
-        in: query
-        name: event_id
-        type: string
-        x-go-name: EventID
+        x-go-name: DisplayName
       produces:
       - application/json
       responses:
@@ -246,46 +355,7 @@ paths:
         Get attendees of event
         Atleast one param is required
       tags:
-      - event
-  /api/event/host:
-    get:
-      consumes:
-      - application/x-www-form-urlencoded
-      description: This will show create a new volunteer.
-      operationId: getEventHost
-      parameters:
-      - description: Generated ID
-        in: query
-        name: generated_id
-        type: string
-        x-go-name: GeneratedID
-      - description: ID of host of event (org)
-        in: query
-        name: organisation_id
-        type: string
-        x-go-name: OrganisationID
-      - description: ID of host of event (user)
-        in: query
-        name: volunteer_id
-        type: string
-        x-go-name: VolunteerID
-      - description: ID of event
-        in: query
-        name: event_id
-        type: string
-        x-go-name: EventID
-      produces:
-      - application/json
-      responses:
-        "200":
-          $ref: '#/responses/successResponse'
-      schemes:
-      - http
-      summary: |-
-        Get hosts of event
-        Atleast one param is required
-      tags:
-      - event
+      - volunteer
   /auth/login:
     post:
       consumes:
