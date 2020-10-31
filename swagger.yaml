@@ -47,6 +47,9 @@ paths:
           $ref: '#/responses/successResponse'
       schemes:
       - http
+      security:
+      - JWTAuth:
+        - '[]'
       summary: |-
         Get attendees of event
         Atleast one param is required
@@ -356,6 +359,55 @@ paths:
         Atleast one param is required
       tags:
       - volunteer
+  /auth/jwt-login:
+    get:
+      consumes:
+      - application/json
+      description: Login to existing account
+      operationId: JWTLogin
+      parameters:
+      - description: Username of user
+        in: query
+        name: username
+        required: true
+        type: string
+        x-go-name: Username
+      - description: Password of user
+        in: query
+        name: password
+        required: true
+        type: string
+        x-go-name: Password
+      responses:
+        "200":
+          $ref: '#/responses/JWTLoginResp'
+        "401":
+          $ref: '#/responses/unauthorizedError'
+      schemes:
+      - http
+      tags:
+      - auth
+  /auth/jwt-refresh:
+    get:
+      consumes:
+      - application/json
+      description: Login to existing account
+      operationId: JWTRefresh
+      parameters:
+      - in: query
+        name: token
+        required: true
+        type: string
+        x-go-name: Token
+      responses:
+        "200":
+          $ref: '#/responses/JWTLoginResp'
+        "401":
+          $ref: '#/responses/unauthorizedError'
+      schemes:
+      - http
+      tags:
+      - auth
   /auth/login:
     post:
       consumes:
@@ -375,6 +427,11 @@ paths:
         required: true
         type: string
         x-go-name: Password
+      - in: query
+        name: token
+        required: true
+        type: string
+        x-go-name: Token
       responses:
         "200":
           $ref: '#/responses/successResponse'
@@ -400,6 +457,12 @@ paths:
 produces:
 - application/json
 responses:
+  JWTLoginResp:
+    description: JWTResp response for JWT logins
+    headers:
+      token:
+        description: Token provided after successful login
+        type: string
   SuccessResponse:
     description: SuccessResponse ...
     schema:
@@ -411,6 +474,11 @@ responses:
 schemes:
 - http
 securityDefinitions:
+  JWTAuth:
+    description: Get token from /auth/jwt-login
+    in: header
+    name: Authorization
+    type: apiKey
   cookieAuth:
     description: Doesnt work from swagger, head over to /login
     in: cookie
