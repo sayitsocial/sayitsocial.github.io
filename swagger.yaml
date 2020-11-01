@@ -1,17 +1,122 @@
 consumes:
 - application/json
 definitions:
-  Body:
-    description: Body contains body of response
+  Event:
     properties:
-      message:
-        description: The validation message
+      category:
+        $ref: '#/definitions/EventCategory'
+      description:
         type: string
-        x-go-name: Message
-    required:
-    - message
+        x-go-name: Description
+      event_id:
+        type: string
+        x-go-name: EventID
+      host_time:
+        format: int64
+        type: integer
+        x-go-name: HostTime
+      name:
+        type: string
+        x-go-name: Name
+      start_time:
+        format: int64
+        type: integer
+        x-go-name: StartTime
     type: object
-    x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/routes/common
+    x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/models/event
+  EventAttendeeBridge:
+    properties:
+      event:
+        $ref: '#/definitions/Event'
+      generated_id:
+        type: string
+        x-go-name: GeneratedID
+      volunteer:
+        $ref: '#/definitions/VolData'
+    type: object
+    x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/models/event/bridge/eventattendee
+  EventCategory:
+    properties:
+      generated_id:
+        format: int64
+        type: integer
+        x-go-name: GeneratedID
+      name:
+        type: string
+        x-go-name: Name
+    type: object
+    x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/models/event/categories
+  EventHostBridge:
+    properties:
+      event:
+        $ref: '#/definitions/Event'
+      generated_id:
+        type: string
+        x-go-name: GeneratedID
+      organisation:
+        $ref: '#/definitions/OrgData'
+      volunteer:
+        $ref: '#/definitions/VolData'
+    type: object
+    x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/models/event/bridge/eventhost
+  OrgData:
+    properties:
+      achievements:
+        type: string
+        x-go-name: Achievements
+      contact_email:
+        type: string
+        x-go-name: ContactEmail
+      contact_phone:
+        type: string
+        x-go-name: ContactPhone
+      desc:
+        type: string
+        x-go-name: Desc
+      display_name:
+        type: string
+        x-go-name: DisplayName
+      locality:
+        type: string
+        x-go-name: Locality
+      organisation_id:
+        type: string
+        x-go-name: OrganisationID
+      owner:
+        type: string
+        x-go-name: Owner
+      registration_no:
+        type: string
+        x-go-name: RegistrationNo
+      type_of_org:
+        format: int64
+        type: integer
+        x-go-name: TypeOfOrg
+    type: object
+    x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/models/orgdata
+  VolData:
+    properties:
+      bio:
+        type: string
+        x-go-name: Bio
+      contact_email:
+        type: string
+        x-go-name: ContactEmail
+      contact_phone:
+        type: string
+        x-go-name: ContactPhone
+      display_name:
+        type: string
+        x-go-name: DisplayName
+      joined:
+        format: int64
+        type: integer
+        x-go-name: Joined
+      volunteer_id:
+        type: string
+        x-go-name: VolunteerID
+    type: object
+    x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/models/voldata
 host: sayitsocial-dev.ddns.net:8000
 info:
   description: Documentation of SayItSocialAPI.
@@ -22,7 +127,9 @@ paths:
     get:
       consumes:
       - application/x-www-form-urlencoded
-      description: This will show create a new volunteer.
+      description: |-
+        This will show attendees of an event.
+        Atleast one param is required
       operationId: getEventAttendee
       parameters:
       - description: Generated ID
@@ -44,22 +151,20 @@ paths:
       - application/json
       responses:
         "200":
-          $ref: '#/responses/successResponse'
+          $ref: '#/responses/eventAttendeeResponse'
       schemes:
       - http
       security:
       - JWTAuth:
         - '[]'
-      summary: |-
-        Get attendees of event
-        Atleast one param is required
+      summary: Get attendees of event
       tags:
       - event
   /api/event/create:
     post:
       consumes:
       - application/x-www-form-urlencoded
-      description: This will show create a new volunteer.
+      description: This will show create a new event.
       operationId: createEvent
       parameters:
       - description: ID of host of event (org)
@@ -108,7 +213,10 @@ paths:
     get:
       consumes:
       - application/x-www-form-urlencoded
-      description: This will show create a new volunteer.
+      description: |2-
+
+        This will show details of event
+        Atleast one param is required
       operationId: getEvent
       parameters:
       - description: Event id of event
@@ -143,19 +251,19 @@ paths:
       - application/json
       responses:
         "200":
-          $ref: '#/responses/successResponse'
+          $ref: '#/responses/eventResponse'
       schemes:
       - http
-      summary: |-
-        Get details of event
-        Atleast one param is required
+      summary: Get details of event
       tags:
       - event
   /api/event/host:
     get:
       consumes:
       - application/x-www-form-urlencoded
-      description: This will show create a new volunteer.
+      description: |-
+        This will show hosts of an event.
+        Atleast one param is required
       operationId: getEventHost
       parameters:
       - description: Generated ID
@@ -182,19 +290,17 @@ paths:
       - application/json
       responses:
         "200":
-          $ref: '#/responses/successResponse'
+          $ref: '#/responses/eventHostResponse'
       schemes:
       - http
-      summary: |-
-        Get hosts of event
-        Atleast one param is required
+      summary: Get hosts of event
       tags:
       - event
   /api/org/create:
     post:
       consumes:
       - application/x-www-form-urlencoded
-      description: This will show create a new volunteer.
+      description: This will show create a new organisation.
       operationId: createOrganisation
       parameters:
       - description: Email of Organisation
@@ -253,7 +359,9 @@ paths:
     get:
       consumes:
       - application/x-www-form-urlencoded
-      description: This will show create a new volunteer.
+      description: |-
+        This will details of an organisation.
+        Atleast one param is required
       operationId: getOrganisation
       parameters:
       - description: Organisation ID
@@ -281,19 +389,17 @@ paths:
       - application/json
       responses:
         "200":
-          $ref: '#/responses/successResponse'
+          $ref: '#/responses/orgResponse'
       schemes:
       - http
-      summary: |-
-        Get attendees of event
-        Atleast one param is required
+      summary: Get details of an organisation
       tags:
       - organisation
   /api/vol/create:
     post:
       consumes:
       - application/x-www-form-urlencoded
-      description: This will show create a new volunteer.
+      description: This will create a new volunteer.
       operationId: createVolunteer
       parameters:
       - description: First name of user
@@ -334,7 +440,9 @@ paths:
     get:
       consumes:
       - application/x-www-form-urlencoded
-      description: This will show create a new volunteer.
+      description: |-
+        This will show details of a volunteer.
+        Atleast one param is required
       operationId: getVolunteer
       parameters:
       - description: Organisation ID
@@ -351,12 +459,10 @@ paths:
       - application/json
       responses:
         "200":
-          $ref: '#/responses/successResponse'
+          $ref: '#/responses/volResponse'
       schemes:
       - http
-      summary: |-
-        Get attendees of event
-        Atleast one param is required
+      summary: Get details of a volunteer
       tags:
       - volunteer
   /auth/jwt-login:
@@ -463,14 +569,25 @@ responses:
       token:
         description: Token provided after successful login
         type: string
-  SuccessResponse:
-    description: SuccessResponse ...
-    schema:
-      $ref: '#/definitions/Body'
   errResponse:
     description: ErrorResponse ...
+  eventAttendeeResponse:
     schema:
-      $ref: '#/definitions/Body'
+      $ref: '#/definitions/EventAttendeeBridge'
+  eventHostResponse:
+    schema:
+      $ref: '#/definitions/EventHostBridge'
+  eventResponse:
+    schema:
+      $ref: '#/definitions/Event'
+  orgResponse:
+    schema:
+      $ref: '#/definitions/OrgData'
+  successResponse:
+    description: SuccessResponse ...
+  volResponse:
+    schema:
+      $ref: '#/definitions/VolData'
 schemes:
 - http
 securityDefinitions:
