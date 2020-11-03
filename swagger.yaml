@@ -15,6 +15,8 @@ definitions:
         format: int64
         type: integer
         x-go-name: HostTime
+      location:
+        $ref: '#/definitions/GeographyPoints'
       name:
         type: string
         x-go-name: Name
@@ -59,6 +61,21 @@ definitions:
         $ref: '#/definitions/VolData'
     type: object
     x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/models/event/bridge/eventhost
+  GeographyPoints:
+    description: |-
+      GeographyPoints is a struct that holds longitude, latitude of a location and optionally radius
+      Radius can be specified to initiate a search of other points in radius from specified coordinates
+    properties:
+      latitude:
+        format: double
+        type: number
+        x-go-name: Latitude
+      longitude:
+        format: double
+        type: number
+        x-go-name: Longitude
+    type: object
+    x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/models
   OrgData:
     properties:
       achievements:
@@ -199,6 +216,16 @@ paths:
         name: category
         type: integer
         x-go-name: Category
+      - description: Location in [Longitude, Latitude]
+        in: query
+        items:
+          format: double
+          type: number
+        maxItems: 2
+        minItems: 2
+        name: location
+        type: array
+        x-go-name: Location
       produces:
       - application/json
       responses:
@@ -247,6 +274,16 @@ paths:
         name: category
         type: integer
         x-go-name: Category
+      - description: Location in [Longitude, Latitude, Radius]
+        in: query
+        items:
+          format: double
+          type: number
+        maxItems: 3
+        minItems: 3
+        name: location
+        type: array
+        x-go-name: Location
       produces:
       - application/json
       responses:
