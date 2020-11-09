@@ -3,8 +3,6 @@ consumes:
 definitions:
   Event:
     properties:
-      category:
-        $ref: '#/definitions/EventCategory'
       description:
         type: string
         x-go-name: Description
@@ -24,6 +22,14 @@ definitions:
         format: int64
         type: integer
         x-go-name: StartTime
+      trending_index:
+        format: int64
+        type: integer
+        x-go-name: TrendingIndex
+      type_of_event:
+        format: int64
+        type: integer
+        x-go-name: TypeOfEvent
     type: object
     x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/models/event
   EventAttendeeBridge:
@@ -37,17 +43,6 @@ definitions:
         $ref: '#/definitions/VolData'
     type: object
     x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/models/event/bridge/eventattendee
-  EventCategory:
-    properties:
-      generated_id:
-        format: int64
-        type: integer
-        x-go-name: GeneratedID
-      name:
-        type: string
-        x-go-name: Name
-    type: object
-    x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/models/event/categories
   EventHostBridge:
     properties:
       event:
@@ -134,6 +129,26 @@ definitions:
         x-go-name: VolunteerID
     type: object
     x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/models/voldata
+  eventShort:
+    properties:
+      event_id:
+        type: string
+        x-go-name: EventID
+      location:
+        $ref: '#/definitions/GeographyPoints'
+      name:
+        type: string
+        x-go-name: Name
+      trending_index:
+        format: int64
+        type: integer
+        x-go-name: TrendingIndex
+      type_of_event:
+        format: int64
+        type: integer
+        x-go-name: TypeOfEvent
+    type: object
+    x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/routes/api
 host: sayitsocial-dev.ddns.net:8000
 info:
   description: Documentation of SayItSocialAPI.
@@ -216,6 +231,12 @@ paths:
         name: category
         type: integer
         x-go-name: Category
+      - description: Type of category [0 - Virtual, 1 - Physical]
+        format: int64
+        in: query
+        name: type_of_event
+        type: integer
+        x-go-name: TypeOfEvent
       - description: Location in [Longitude, Latitude]
         in: query
         items:
@@ -274,6 +295,12 @@ paths:
         name: category
         type: integer
         x-go-name: Category
+      - description: Type of event [0 - Virtual, 1 - Physical]
+        format: int64
+        in: query
+        name: type_of_event
+        type: integer
+        x-go-name: TypeOfEvent
       - description: Location in [Longitude, Latitude, Radius]
         in: query
         items:
@@ -284,11 +311,23 @@ paths:
         name: location
         type: array
         x-go-name: Location
+      - description: Sort results by [trending/ST_XMin(location), ASC/DESC/empty]
+        in: query
+        name: sortby
+        type: string
+        x-go-name: SortBy
+      - description: Get short results
+        in: query
+        name: short
+        type: boolean
+        x-go-name: Short
       produces:
       - application/json
       responses:
         "200":
           $ref: '#/responses/eventResponse'
+        "201":
+          $ref: '#/responses/eventShortResponse'
       schemes:
       - http
       summary: Get details of event
@@ -617,6 +656,12 @@ responses:
   eventResponse:
     schema:
       $ref: '#/definitions/Event'
+  eventShortResponse:
+    description: |-
+      This response will be returned if "short" is true
+      Status code will be 200
+    schema:
+      $ref: '#/definitions/eventShort'
   orgResponse:
     schema:
       $ref: '#/definitions/OrgData'
