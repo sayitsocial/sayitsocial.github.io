@@ -56,6 +56,18 @@ definitions:
         $ref: '#/definitions/VolData'
     type: object
     x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/models/event/bridge/eventhost
+  Followers:
+    properties:
+      generated_id:
+        type: string
+        x-go-name: GeneratedID
+      organisation_id:
+        type: string
+        x-go-name: OrganisationID
+      volunteer:
+        $ref: '#/definitions/VolData'
+    type: object
+    x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/models/organisation/followerbridge
   GeographyPoints:
     description: |-
       GeographyPoints is a struct that holds longitude, latitude of a location and optionally radius
@@ -72,6 +84,7 @@ definitions:
     type: object
     x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/models
   OrgData:
+    description: OrgData is a model to store data about an organisation
     properties:
       achievements:
         type: string
@@ -88,6 +101,10 @@ definitions:
       display_name:
         type: string
         x-go-name: DisplayName
+      follower_count:
+        format: uint64
+        type: integer
+        x-go-name: Followers
       locality:
         type: string
         x-go-name: Locality
@@ -107,7 +124,7 @@ definitions:
         type: integer
         x-go-name: TypeOfOrg
     type: object
-    x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/models/orgdata
+    x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/models/organisation/orgdata
   VolData:
     properties:
       bio:
@@ -130,7 +147,7 @@ definitions:
         type: string
         x-go-name: VolunteerID
     type: object
-    x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/models/voldata
+    x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/models/volunteer/voldata
   eventShort:
     properties:
       event_id:
@@ -156,6 +173,10 @@ definitions:
       display_name:
         type: string
         x-go-name: DisplayName
+      follower_count:
+        format: uint64
+        type: integer
+        x-go-name: Followers
       location:
         $ref: '#/definitions/GeographyPoints'
       organisation_id:
@@ -390,6 +411,62 @@ paths:
       summary: Get hosts of event
       tags:
       - event
+  /api/followers/add:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: Add a follower to certain organisation
+      operationId: addFollower
+      parameters:
+      - description: ID of organisation who is being followed
+        in: query
+        name: organisation_id
+        required: true
+        type: string
+        x-go-name: OrganisationID
+      - description: ID of volunteer who is following
+        in: query
+        name: volunteer_id
+        required: true
+        type: string
+        x-go-name: VolunteerID
+      produces:
+      - application/json
+      responses:
+        "200":
+          $ref: '#/responses/successResponse'
+      schemes:
+      - http
+      tags:
+      - followers
+  /api/followers/remove:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: Remove a follower from certain organisation
+      operationId: delFollower
+      parameters:
+      - description: ID of organisation who is being followed
+        in: query
+        name: organisation_id
+        required: true
+        type: string
+        x-go-name: OrganisationID
+      - description: ID of volunteer who is following
+        in: query
+        name: volunteer_id
+        required: true
+        type: string
+        x-go-name: VolunteerID
+      produces:
+      - application/json
+      responses:
+        "200":
+          $ref: '#/responses/successResponse'
+      schemes:
+      - http
+      tags:
+      - followers
   /api/org/create:
     post:
       consumes:
