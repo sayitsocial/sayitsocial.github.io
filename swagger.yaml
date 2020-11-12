@@ -350,10 +350,12 @@ paths:
         name: location
         type: array
         x-go-name: Location
-      - description: Sort results by [trending/ST_XMin(location), ASC/DESC/empty]
+      - description: Sort results by [trending_index/ST_XMin(location), ASC/DESC/empty]
         in: query
+        items:
+          type: string
         name: sortby
-        type: string
+        type: array
         x-go-name: SortBy
       - description: Get short results
         in: query
@@ -576,6 +578,13 @@ paths:
         name: location
         type: array
         x-go-name: Location
+      - description: Sort results by [followers, ASC/DESC]
+        in: query
+        items:
+          type: string
+        name: sortby
+        type: array
+        x-go-name: SortBy
       - description: Get short results
         in: query
         name: short
