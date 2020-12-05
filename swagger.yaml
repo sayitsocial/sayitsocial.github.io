@@ -18,6 +18,8 @@ definitions:
       name:
         type: string
         x-go-name: Name
+      page:
+        $ref: '#/definitions/Page'
       start_time:
         format: int64
         type: integer
@@ -31,7 +33,7 @@ definitions:
         type: integer
         x-go-name: TypeOfEvent
     type: object
-    x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/models/event
+    x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/models
   EventAttendeeBridge:
     properties:
       event:
@@ -42,7 +44,7 @@ definitions:
       volunteer:
         $ref: '#/definitions/VolData'
     type: object
-    x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/models/event/bridge/eventattendee
+    x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/models
   EventHostBridge:
     properties:
       event:
@@ -55,7 +57,7 @@ definitions:
       volunteer:
         $ref: '#/definitions/VolData'
     type: object
-    x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/models/event/bridge/eventhost
+    x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/models
   Followers:
     properties:
       generated_id:
@@ -67,22 +69,47 @@ definitions:
       volunteer:
         $ref: '#/definitions/VolData'
     type: object
-    x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/models/organisation/followerbridge
+    x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/models
   GeographyPoints:
     description: |-
       GeographyPoints is a struct that holds longitude, latitude of a location and optionally radius
       Radius can be specified to initiate a search of other points in radius from specified coordinates
     properties:
       latitude:
-        format: double
-        type: number
+        type: string
         x-go-name: Latitude
       longitude:
-        format: double
-        type: number
+        type: string
         x-go-name: Longitude
     type: object
-    x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/models
+    x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/database/querybuilder
+  JWTRefreshReq:
+    description: JWTRefreshReq contains Token for refresh
+    properties:
+      token:
+        description: Token provided after successful login
+        type: string
+        x-go-name: Token
+    required:
+    - token
+    type: object
+    x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/routes/authentication
+  LoginReq:
+    description: LoginReq contains Login details
+    properties:
+      password:
+        description: Password of user
+        type: string
+        x-go-name: Password
+      username:
+        description: Username of user
+        type: string
+        x-go-name: Username
+    required:
+    - username
+    - password
+    type: object
+    x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/routes/authentication
   OrgData:
     description: OrgData is a model to store data about an organisation
     properties:
@@ -105,9 +132,6 @@ definitions:
         format: uint64
         type: integer
         x-go-name: Followers
-      locality:
-        type: string
-        x-go-name: Locality
       location:
         $ref: '#/definitions/GeographyPoints'
       organisation_id:
@@ -124,7 +148,28 @@ definitions:
         type: integer
         x-go-name: TypeOfOrg
     type: object
-    x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/models/organisation/orgdata
+    x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/models
+  Page:
+    description: Page holds limit and offset to implement pagination
+    properties:
+      Limit:
+        format: int64
+        type: integer
+      Offset:
+        format: int64
+        type: integer
+    type: object
+    x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/database/querybuilder
+  SortBy:
+    properties:
+      column:
+        type: string
+        x-go-name: Column
+      mode:
+        type: string
+        x-go-name: Mode
+    type: object
+    x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/database/querybuilder
   VolData:
     properties:
       bio:
@@ -147,7 +192,44 @@ definitions:
         type: string
         x-go-name: VolunteerID
     type: object
-    x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/models/volunteer/voldata
+    x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/models
+  eventPostReq:
+    properties:
+      category:
+        description: Type of category [Refer to event_category]
+        format: int64
+        type: integer
+        x-go-name: Category
+      description:
+        description: Name of event
+        type: string
+        x-go-name: Description
+      location:
+        $ref: '#/definitions/GeographyPoints'
+      name:
+        description: Name of event
+        type: string
+        x-go-name: Name
+      organisation_id:
+        description: ID of host of event (org)
+        type: string
+        x-go-name: OrganisationID
+      start_time:
+        description: Start time of event [unix timestamp]
+        format: int64
+        type: integer
+        x-go-name: StartTime
+      type_of_event:
+        description: Type of category [0 - Virtual, 1 - Physical]
+        format: int64
+        type: integer
+        x-go-name: TypeOfEvent
+      volunteer_id:
+        description: ID of host of event (user)
+        type: string
+        x-go-name: VolunteerID
+    type: object
+    x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/routes/api
   eventShort:
     properties:
       event_id:
@@ -168,6 +250,59 @@ definitions:
         x-go-name: TypeOfEvent
     type: object
     x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/routes/api
+  followerReq:
+    properties:
+      organisation_id:
+        description: ID of organisation who is being followed
+        type: string
+        x-go-name: OrganisationID
+      volunteer_id:
+        description: ID of volunteer who is following
+        type: string
+        x-go-name: VolunteerID
+    required:
+    - organisation_id
+    - volunteer_id
+    type: object
+    x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/routes/api
+  orgCreReq:
+    description: Signup details for Organisation
+    properties:
+      email:
+        description: Email of Organisation
+        type: string
+        x-go-name: Email
+      location:
+        $ref: '#/definitions/GeographyPoints'
+      org_name:
+        description: Name of Organisation
+        type: string
+        x-go-name: OrgName
+      org_type:
+        description: Type of Organisation
+        format: int64
+        type: string
+        x-go-name: TypeOfOrg
+      owner:
+        description: Owner of Organisation
+        type: string
+        x-go-name: Owner
+      password:
+        description: Password of user
+        type: string
+        x-go-name: Password
+      reg_no:
+        description: Registration Number of organisation according to ngodarpan if applicable
+        type: string
+        x-go-name: RegistrationNo
+    required:
+    - email
+    - password
+    - org_name
+    - org_type
+    - owner
+    type: object
+    x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/routes/api
   orgDataShort:
     properties:
       display_name:
@@ -186,6 +321,32 @@ definitions:
         format: int64
         type: integer
         x-go-name: TypeOfOrg
+    type: object
+    x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/routes/api
+  volCreReq:
+    description: Signup details for Volunteer
+    properties:
+      email:
+        description: Email of user
+        type: string
+        x-go-name: Email
+      first_name:
+        description: First name of user
+        type: string
+        x-go-name: FirstName
+      last_name:
+        description: Last name of user
+        type: string
+        x-go-name: LastName
+      password:
+        description: Password of user
+        type: string
+        x-go-name: Password
+    required:
+    - first_name
+    - last_name
+    - email
+    - password
     type: object
     x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/routes/api
 host: sayitsocial-dev.ddns.net:8000
@@ -238,54 +399,9 @@ paths:
       description: This will show create a new event.
       operationId: createEvent
       parameters:
-      - description: ID of host of event (org)
+      - $ref: '#/definitions/eventPostReq'
         in: query
-        name: organisation_id
-        type: string
-        x-go-name: OrganisationID
-      - description: ID of host of event (user)
-        in: query
-        name: volunteer_id
-        type: string
-        x-go-name: VolunteerID
-      - description: Name of event
-        in: query
-        name: name
-        type: string
-        x-go-name: Name
-      - description: Name of event
-        in: query
-        name: description
-        type: string
-        x-go-name: Description
-      - description: Start time of event [unix timestamp]
-        format: int64
-        in: query
-        name: start_time
-        type: integer
-        x-go-name: StartTime
-      - description: Type of category [Refer to event_category]
-        format: int64
-        in: query
-        name: category
-        type: integer
-        x-go-name: Category
-      - description: Type of category [0 - Virtual, 1 - Physical]
-        format: int64
-        in: query
-        name: type_of_event
-        type: integer
-        x-go-name: TypeOfEvent
-      - description: Location in [Longitude, Latitude]
-        in: query
-        items:
-          format: double
-          type: number
-        maxItems: 2
-        minItems: 2
-        name: location
-        type: array
-        x-go-name: Location
+        name: EventsPostModel
       produces:
       - application/json
       responses:
@@ -340,28 +456,27 @@ paths:
         name: type_of_event
         type: integer
         x-go-name: TypeOfEvent
-      - description: Location in [Longitude, Latitude, Radius]
+      - $ref: '#/definitions/GeographyPoints'
+        description: Location in [Longitude, Latitude, Radius]
         in: query
-        items:
-          format: double
-          type: number
-        maxItems: 3
-        minItems: 3
         name: location
-        type: array
         x-go-name: Location
-      - description: Sort results by [trending_index/ST_XMin(location), ASC/DESC/empty]
+      - $ref: '#/definitions/SortBy'
+        description: Sort results by [trending_index/ST_XMin(location), ASC/DESC/empty]
         in: query
-        items:
-          type: string
         name: sortby
-        type: array
         x-go-name: SortBy
       - description: Get short results
         in: query
         name: short
         type: boolean
         x-go-name: Short
+      - description: Pagination
+        format: int64
+        in: query
+        name: page
+        type: integer
+        x-go-name: Page
       produces:
       - application/json
       responses:
@@ -420,18 +535,9 @@ paths:
       description: Add a follower to certain organisation
       operationId: addFollower
       parameters:
-      - description: ID of organisation who is being followed
+      - $ref: '#/definitions/followerReq'
         in: query
-        name: organisation_id
-        required: true
-        type: string
-        x-go-name: OrganisationID
-      - description: ID of volunteer who is following
-        in: query
-        name: volunteer_id
-        required: true
-        type: string
-        x-go-name: VolunteerID
+        name: Followers
       produces:
       - application/json
       responses:
@@ -448,18 +554,9 @@ paths:
       description: Remove a follower from certain organisation
       operationId: delFollower
       parameters:
-      - description: ID of organisation who is being followed
+      - $ref: '#/definitions/followerReq'
         in: query
-        name: organisation_id
-        required: true
-        type: string
-        x-go-name: OrganisationID
-      - description: ID of volunteer who is following
-        in: query
-        name: volunteer_id
-        required: true
-        type: string
-        x-go-name: VolunteerID
+        name: Followers
       produces:
       - application/json
       responses:
@@ -475,59 +572,6 @@ paths:
       - application/x-www-form-urlencoded
       description: This will show create a new organisation.
       operationId: createOrganisation
-      parameters:
-      - description: Email of Organisation
-        in: query
-        name: email
-        required: true
-        type: string
-        x-go-name: Email
-      - description: Password of user
-        in: query
-        name: password
-        required: true
-        type: string
-        x-go-name: Password
-      - description: Name of Organisation
-        in: query
-        name: org_name
-        required: true
-        type: string
-        x-go-name: OrgName
-      - description: Type of Organisation
-        format: int64
-        in: query
-        name: org_type
-        required: true
-        type: integer
-        x-go-name: TypeOfOrg
-      - description: Locality of Organisation
-        in: query
-        name: locality
-        required: true
-        type: string
-        x-go-name: Locality
-      - description: Owner of Organisation
-        in: query
-        name: owner
-        required: true
-        type: string
-        x-go-name: Owner
-      - description: Registration Number of organisation according to ngodarpan if applicable
-        in: query
-        name: reg_no
-        type: string
-        x-go-name: RegistrationNo
-      - description: Location in [Longitude, Latitude]
-        in: query
-        items:
-          format: double
-          type: number
-        maxItems: 2
-        minItems: 2
-        name: location
-        type: array
-        x-go-name: Location
       produces:
       - application/json
       responses:
@@ -568,22 +612,15 @@ paths:
         name: type_of_org
         type: integer
         x-go-name: TypeOfOrg
-      - description: Location in [Longitude, Latitude, Radius]
+      - $ref: '#/definitions/GeographyPoints'
+        description: Location in [Longitude, Latitude, Radius]
         in: query
-        items:
-          format: double
-          type: number
-        maxItems: 3
-        minItems: 3
         name: location
-        type: array
         x-go-name: Location
-      - description: Sort results by [followers, ASC/DESC]
+      - $ref: '#/definitions/SortBy'
+        description: Sort results by [followers, ASC/DESC]
         in: query
-        items:
-          type: string
         name: sortby
-        type: array
         x-go-name: SortBy
       - description: Get short results
         in: query
@@ -609,30 +646,9 @@ paths:
       description: This will create a new volunteer.
       operationId: createVolunteer
       parameters:
-      - description: First name of user
+      - $ref: '#/definitions/volCreReq'
         in: query
-        name: first_name
-        required: true
-        type: string
-        x-go-name: FirstName
-      - description: Last name of user
-        in: query
-        name: last_name
-        required: true
-        type: string
-        x-go-name: LastName
-      - description: Email of user
-        in: query
-        name: email
-        required: true
-        type: string
-        x-go-name: Email
-      - description: Password of user
-        in: query
-        name: password
-        required: true
-        type: string
-        x-go-name: Password
+        name: Volunteer
       produces:
       - application/json
       responses:
@@ -673,24 +689,16 @@ paths:
       tags:
       - volunteer
   /auth/jwt-login:
-    get:
+    post:
       consumes:
       - application/json
       description: Login to existing account
       operationId: JWTLogin
       parameters:
-      - description: Username of user
-        in: query
-        name: username
-        required: true
-        type: string
-        x-go-name: Username
-      - description: Password of user
-        in: query
-        name: password
-        required: true
-        type: string
-        x-go-name: Password
+      - in: body
+        name: Login
+        schema:
+          $ref: '#/definitions/LoginReq'
       responses:
         "200":
           $ref: '#/responses/JWTLoginResp'
@@ -701,17 +709,16 @@ paths:
       tags:
       - auth
   /auth/jwt-refresh:
-    get:
+    post:
       consumes:
       - application/json
       description: Login to existing account
       operationId: JWTRefresh
       parameters:
-      - in: query
-        name: token
-        required: true
-        type: string
-        x-go-name: Token
+      - in: body
+        name: JWT
+        schema:
+          $ref: '#/definitions/JWTRefreshReq'
       responses:
         "200":
           $ref: '#/responses/JWTLoginResp'
@@ -728,23 +735,10 @@ paths:
       description: Login to existing account
       operationId: login
       parameters:
-      - description: Username of user
-        in: query
-        name: username
-        required: true
-        type: string
-        x-go-name: Username
-      - description: Password of user
-        in: query
-        name: password
-        required: true
-        type: string
-        x-go-name: Password
-      - in: query
-        name: token
-        required: true
-        type: string
-        x-go-name: Token
+      - in: body
+        name: Login
+        schema:
+          $ref: '#/definitions/LoginReq'
       responses:
         "200":
           $ref: '#/responses/successResponse'
@@ -779,32 +773,50 @@ responses:
   errResponse:
     description: ErrorResponse ...
   eventAttendeeResponse:
+    headers:
+      eventAttendee:
+        description: 'in: query'
     schema:
       $ref: '#/definitions/EventAttendeeBridge'
   eventHostResponse:
+    headers:
+      eventHost:
+        description: 'in: query'
     schema:
       $ref: '#/definitions/EventHostBridge'
   eventResponse:
+    headers:
+      event:
+        description: 'in: query'
     schema:
       $ref: '#/definitions/Event'
   eventShortResponse:
     description: |-
       This response will be returned if "short" is true
       Status code will be 200
+    headers:
+      event:
+        description: 'in: query'
     schema:
       $ref: '#/definitions/eventShort'
   orgResponse:
+    headers:
+      org: {}
     schema:
       $ref: '#/definitions/OrgData'
   orgResponseShort:
     description: |-
       This response will be returned if "short" is true
       Status code will be 200
+    headers:
+      org: {}
     schema:
       $ref: '#/definitions/orgDataShort'
   successResponse:
     description: SuccessResponse ...
   volResponse:
+    headers:
+      vol: {}
     schema:
       $ref: '#/definitions/VolData'
 schemes:
