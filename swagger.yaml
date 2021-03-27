@@ -18,8 +18,6 @@ definitions:
       name:
         type: string
         x-go-name: Name
-      page:
-        $ref: '#/definitions/Page'
       start_time:
         format: int64
         type: integer
@@ -82,7 +80,7 @@ definitions:
         type: string
         x-go-name: Longitude
     type: object
-    x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/database/querybuilder
+    x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/database/querybuilder/types
   JWTRefreshReq:
     description: JWTRefreshReq contains Token for refresh
     properties:
@@ -149,27 +147,6 @@ definitions:
         x-go-name: TypeOfOrg
     type: object
     x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/models
-  Page:
-    description: Page holds limit and offset to implement pagination
-    properties:
-      Limit:
-        format: int64
-        type: integer
-      Offset:
-        format: int64
-        type: integer
-    type: object
-    x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/database/querybuilder
-  SortBy:
-    properties:
-      column:
-        type: string
-        x-go-name: Column
-      mode:
-        type: string
-        x-go-name: Mode
-    type: object
-    x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/database/querybuilder
   VolData:
     properties:
       bio:
@@ -292,7 +269,8 @@ definitions:
         type: string
         x-go-name: Password
       reg_no:
-        description: Registration Number of organisation according to ngodarpan if applicable
+        description: Registration Number of organisation according to ngodarpan if
+          applicable
         type: string
         x-go-name: RegistrationNo
     required:
@@ -349,7 +327,7 @@ definitions:
     - password
     type: object
     x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/routes/api
-host: sayitsocial-dev.ddns.net:8000
+host: dev.sayitsocial.in:6969
 info:
   description: Documentation of SayItSocialAPI.
   title: classification SayItSocial.
@@ -461,16 +439,49 @@ paths:
         in: query
         name: location
         x-go-name: Location
-      - $ref: '#/definitions/SortBy'
-        description: Sort results by [trending_index/ST_XMin(location), ASC/DESC/empty]
+      - description: Sort results by [trending_index/ST_XMin(location)]
         in: query
         name: sortby
+        type: string
         x-go-name: SortBy
+      - description: Pagination
+        format: int64
+        in: query
+        name: page
+        type: integer
+        x-go-name: Page
       - description: Get short results
         in: query
         name: short
         type: boolean
         x-go-name: Short
+      produces:
+      - application/json
+      responses:
+        "200":
+          $ref: '#/responses/eventResponse'
+        "201":
+          $ref: '#/responses/eventShortResponse'
+      schemes:
+      - http
+      summary: Get details of event
+      tags:
+      - event
+  /api/event/get/all:
+    get:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: |2-
+
+        This will show details of event
+        Atleast one param is required
+      operationId: getEventAll
+      parameters:
+      - description: Sort results by [trending_index/ST_XMin(location)]
+        in: query
+        name: sortby
+        type: string
+        x-go-name: SortBy
       - description: Pagination
         format: int64
         in: query
@@ -486,7 +497,7 @@ paths:
           $ref: '#/responses/eventShortResponse'
       schemes:
       - http
-      summary: Get details of event
+      summary: Get all events
       tags:
       - event
   /api/event/host:
@@ -617,10 +628,10 @@ paths:
         in: query
         name: location
         x-go-name: Location
-      - $ref: '#/definitions/SortBy'
-        description: Sort results by [followers, ASC/DESC]
+      - description: Sort results by [followers]
         in: query
         name: sortby
+        type: string
         x-go-name: SortBy
       - description: Get short results
         in: query
@@ -773,18 +784,21 @@ responses:
   errResponse:
     description: ErrorResponse ...
   eventAttendeeResponse:
+    description: ""
     headers:
       eventAttendee:
         description: 'in: query'
     schema:
       $ref: '#/definitions/EventAttendeeBridge'
   eventHostResponse:
+    description: ""
     headers:
       eventHost:
         description: 'in: query'
     schema:
       $ref: '#/definitions/EventHostBridge'
   eventResponse:
+    description: ""
     headers:
       event:
         description: 'in: query'
@@ -800,6 +814,7 @@ responses:
     schema:
       $ref: '#/definitions/eventShort'
   orgResponse:
+    description: ""
     headers:
       org: {}
     schema:
@@ -815,6 +830,7 @@ responses:
   successResponse:
     description: SuccessResponse ...
   volResponse:
+    description: ""
     headers:
       vol: {}
     schema:
