@@ -327,7 +327,7 @@ definitions:
     - password
     type: object
     x-go-package: github.com/Sayitsocial/Sayitsocial_go/pkg/routes/api
-host: dev.sayitsocial.in:8443
+host: dev.sayitsocial.in:9001
 info:
   description: Documentation of SayItSocialAPI.
   title: classification SayItSocial.
